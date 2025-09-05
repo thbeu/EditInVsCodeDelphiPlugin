@@ -8,7 +8,7 @@ implementation
 uses
   System.Classes,
   System.SysUtils,
-  System.Generics.Collections,                                                                 
+  System.Generics.Collections,
   ToolsAPI,
   Vcl.Menus,
   OSCmdLineExecutor,
@@ -120,9 +120,10 @@ begin
   var FileName := sourceInfos.FileName;
   var project := (BorlandIDEServices as IOTAModuleServices).GetActiveProject;
 
-  if project = nil then begin
-       ShowMessage('No active project found');
-       exit;
+  if project = nil then
+  begin
+    ShowMessage('No active project found');
+    exit;
   end;
 
   var ProjectPath := ExtractFilePath(project.FileName);
@@ -130,12 +131,11 @@ begin
   if not SaveAllModules then
     exit;
 
-  var cmdline:string;
+  var cmdline: string;
   if sourceInfos.Line < 0 then
-    cmdline := Format('cmd /c "code --reuse-window %s"', [ProjectPath])
+    cmdline := Format('"%s" -r "%s"', ['C:\Program Files\Microsoft VS Code\Code.exe', FileName])
   else
-    cmdline := Format('cmd /c "code --reuse-window %s -g %s:%d:%d"', [ProjectPath, FileName, sourceInfos.Line, sourceInfos.Column]);
-
+    cmdline := Format('"%s" -r -g "%s":%d:%d', ['C:\Program Files\Microsoft VS Code\Code.exe', FileName, sourceInfos.Line, sourceInfos.Column]);
 
   var executor := TOSCommandLineExecutor.Create(nil);
   try
